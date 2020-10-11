@@ -20,7 +20,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.solomoon.mytriptracker.App;
 import com.solomoon.mytriptracker.R;
 import com.solomoon.mytriptracker.core.DefaultUserManager;
+import com.solomoon.mytriptracker.exception.IncorrectPasswordException;
 import com.solomoon.mytriptracker.exception.UserAlreadyExistsException;
+import com.solomoon.mytriptracker.exception.UserNotFoundException;
 import com.solomoon.mytriptracker.model.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,10 +33,14 @@ public class MainActivity extends AppCompatActivity {
     ConstraintLayout root;
     LayoutInflater inflater;
 
+    DefaultUserManager userManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        userManager = new DefaultUserManager(App.getInstance().getDatabase());
 
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
@@ -48,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> {
             showRegisterDialog();
         });
+
+
     }
 
     private void showRegisterDialog() {
@@ -72,22 +80,22 @@ public class MainActivity extends AppCompatActivity {
             Button btnDialogPositive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
             btnDialogPositive.setOnClickListener(v -> {
                 if (TextUtils.isEmpty(edtFirstName.getText().toString())) {
-                    Toast.makeText(this, R.string.empty_first_name,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.empty_first_name, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(edtLastName.getText().toString())) {
-                    Toast.makeText(this, R.string.empty_last_name,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.empty_last_name, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(edtLogin.getText().toString())) {
-                    Toast.makeText(this, R.string.empty_login,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.empty_login, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (edtPassword.getText().toString().length() < MIN_PASSWORD_LENGTH) {
-                    Toast.makeText(this, R.string.min_password_length_message,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.min_password_length_message, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -97,14 +105,13 @@ public class MainActivity extends AppCompatActivity {
                 user.setLogin(edtLogin.getText().toString());
                 user.setPassword(edtPassword.getText().toString());
 
-                DefaultUserManager userManager = new DefaultUserManager(App.getInstance().getDatabase());
                 try {
                     userManager.registerNewUser(user);
                     App.getInstance().setCurrentUser(user);
                     TripListActivity.start(this);
                     alertDialog.dismiss();
                 } catch (UserAlreadyExistsException e) {
-                    Toast.makeText(this, e.getMessage(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -125,15 +132,33 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle(R.string.login_dialog_title)
                 .setMessage(R.string.login_dialog_message)
                 .setView(loginView)
-                .setNegativeButton(R.string.dialog_negative_button, (dialog, which) -> dialog.dismiss())
-                .setPositiveButton(R.string.dialog_positive_login, (dialog, which) -> {
-                    if (TextUtils.isEmpty(edtLogin.getText().toString())) {
-                        Snackbar.make(root, R.string.empty_login, BaseTransientBottomBar.LENGTH_SHORT).show();
-                        return;
-                    }
+                .setNegativeButton(R.string.dialog_negative_button, null)
+                .setPositiveButton(R.string.dialog_positive_login, null);
 
-                }).show();
+        AlertDialog alertDialog = loginDialog.create();
+        alertDialog.setOnShowListener(dialog -> {
+            Button btnDialogPositive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            btnDialogPositive.setOnClickListener(v -> {
+                if (TextUtils.isEmpty(edtLogin.getText().toString())) {
+                    Toast.makeText(this, R.string.empty_login, Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
+                try {
+                    User user = userManager.login(edtLogin.getText().toString(), edtPassword.getText().toString());
+                    App.getInstance().setCurrentUser(user);
+                    TripListActivity.start(this);
+                    alertDialog.dismiss();
+                } catch (UserNotFoundException e){
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                } catch (IncorrectPasswordException e){
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
 
+            });
+        });
+
+        alertDialog.show();
     }
+
 }

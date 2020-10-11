@@ -5,11 +5,13 @@ import java.security.NoSuchAlgorithmException;
 
 public class Encryptor {
 
-    public static String encryptSHA2(String data){
+    private static final String ENCRYPT_ALGORITHM = "SHA-256";
+
+    public static String encryptSHA256(String data){
         String resultData = "";
         try {
             // Create MD5 Hash
-            MessageDigest digest = java.security.MessageDigest.getInstance("SHA2");
+            MessageDigest digest = java.security.MessageDigest.getInstance(ENCRYPT_ALGORITHM);
             digest.update(data.getBytes());
             byte messageDigest[] = digest.digest();
 

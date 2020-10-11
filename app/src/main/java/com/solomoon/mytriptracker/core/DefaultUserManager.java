@@ -2,6 +2,8 @@ package com.solomoon.mytriptracker.core;
 
 import com.solomoon.mytriptracker.data.AppDatabase;
 import com.solomoon.mytriptracker.data.UserDao;
+import com.solomoon.mytriptracker.exception.IncorrectPasswordException;
+import com.solomoon.mytriptracker.exception.UserNotFoundException;
 import com.solomoon.mytriptracker.model.User;
 import com.solomoon.mytriptracker.exception.UserAlreadyExistsException;
 import com.solomoon.mytriptracker.utils.Encryptor;
@@ -9,6 +11,8 @@ import com.solomoon.mytriptracker.utils.Encryptor;
 public class DefaultUserManager {
 
     private final String USER_EXIST_MESSAGE = "User already exist";
+    private final String USER_NOT_FOUND_MESSAGE = "User not found";
+    private final String INCORRECT_PASSWORD_MESSAGE = "Incorrect password";
 
     private UserDao userDao;
 
@@ -25,6 +29,20 @@ public class DefaultUserManager {
         }
     }
 
+    public User login(String login, String password) {
+        User user = userDao.getUserByLogin(login);
+        if (user == null) {
+            throw new UserNotFoundException(USER_NOT_FOUND_MESSAGE);
+        } else {
+            String encryptPassword = Encryptor.encryptSHA256(password);
+            if (!user.getPassword().equals(encryptPassword)) {
+                throw new IncorrectPasswordException(INCORRECT_PASSWORD_MESSAGE);
+            } else {
+                return user;
+            }
+        }
+    }
+
     private Boolean existsUser(String login) {
         User user = userDao.getUserByLogin(login);
         return user != null;
@@ -32,7 +50,7 @@ public class DefaultUserManager {
 
     private void encryptPassword(final User user) {
         final String password = user.getPassword();
-        user.setPassword(Encryptor.encryptSHA2(password));
+        user.setPassword(Encryptor.encryptSHA256(password));
     }
 
 }
