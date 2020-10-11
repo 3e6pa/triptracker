@@ -13,6 +13,7 @@ import com.solomoon.mytriptracker.data.AppDatabase;
 import com.solomoon.mytriptracker.data.TripDao;
 import com.solomoon.mytriptracker.data.TripPointDao;
 import com.solomoon.mytriptracker.data.UserDao;
+import com.solomoon.mytriptracker.model.User;
 import com.solomoon.mytriptracker.service.GeolocationService;
 
 public class App extends Application implements ServiceConnection {
@@ -25,6 +26,7 @@ public class App extends Application implements ServiceConnection {
     private TripDao tripDao;
     private TripPointDao tripPointDao;
 
+    private User currentUser;
 
     private static App instance;
 
@@ -83,6 +85,13 @@ public class App extends Application implements ServiceConnection {
         return tripPointDao;
     }
 
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
 
 
 }

@@ -1,8 +1,11 @@
 package com.solomoon.mytriptracker.ui;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -19,6 +22,10 @@ public class TripListActivity extends PermissionManager  {
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
+    public static void start(Activity caller) {
+        Intent intent = new Intent(caller, MapsActivity.class);
+        caller.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

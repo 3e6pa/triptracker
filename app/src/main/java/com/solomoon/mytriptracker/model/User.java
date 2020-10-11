@@ -15,21 +15,22 @@ import java.util.UUID;
 
 @Entity
 public class User implements Parcelable {
+
     @PrimaryKey
     @NonNull
-    public String id;
+    private String id;
 
     @ColumnInfo(name = "firstName")
-    public String firstName;
+    private String firstName;
 
     @ColumnInfo(name = "lastName")
-    public String lastName;
+    private String lastName;
 
     @ColumnInfo(name = "login")
-    public String login;
+    private String login;
 
     @ColumnInfo(name = "password")
-    public String password;
+    private String password;
 
     public User() {
         this.id = UUID.randomUUID().toString();
@@ -94,4 +95,45 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

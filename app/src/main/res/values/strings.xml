@@ -30,4 +30,18 @@
     <string name="login_failed">"Login failed"</string>
     <string name="prompt_first_name">First Name</string>
     <string name="prompt_last_name">Last Name</string>
+    <string name="login">Login</string>
+    <string name="btn_text_register">Register</string>
+    <string name="btn_text_login">Login</string>
+    <string name="login_dialog_title">Login in My Trip Tracker</string>
+    <string name="login_dialog_message">Enter login data</string>
+    <string name="dialog_negative_button">Cancel</string>
+    <string name="dialog_positive_login">Login</string>
+    <string name="empty_login">Login cannot be empty</string>
+    <string name="register_dialog_title">Registration in My Trip Tracker</string>
+    <string name="register_dialog_message">Enter please data for register</string>
+    <string name="dialog_positive_register">Register</string>
+    <string name="empty_first_name">First Name cannot be empty</string>
+    <string name="empty_last_name">Last Name cannot be empty</string>
+    <string name="min_password_length_message">Password must be at least 5 characters</string>
 </resources>
