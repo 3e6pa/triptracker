@@ -4,23 +4,13 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Build;
 import android.os.IBinder;
 
 import androidx.room.Room;
 
-import com.solomoon.mytriptracker.core.DefaultAppSettingsManager;
-import com.solomoon.mytriptracker.core.DefaultUserManager;
 import com.solomoon.mytriptracker.data.AppDatabase;
 import com.solomoon.mytriptracker.data.RoomMigration;
-import com.solomoon.mytriptracker.data.TripDao;
-import com.solomoon.mytriptracker.data.TripPointDao;
-import com.solomoon.mytriptracker.data.UserDao;
-import com.solomoon.mytriptracker.model.AppSettings;
-import com.solomoon.mytriptracker.model.User;
 import com.solomoon.mytriptracker.service.GeolocationService;
-import com.solomoon.mytriptracker.ui.MapsActivity;
-import com.solomoon.mytriptracker.ui.TripListActivity;
 
 public class App extends Application implements ServiceConnection {
 
@@ -51,6 +41,7 @@ public class App extends Application implements ServiceConnection {
     public void onServiceConnected(ComponentName name, IBinder service) {
         GeolocationService.LocalBinder localBinder = (GeolocationService.LocalBinder) service;
         geolocationService = localBinder.getService();
+        geolocationService.setDatabase(database);
     }
 
     @Override

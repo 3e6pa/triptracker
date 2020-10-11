@@ -8,7 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.solomoon.mytriptracker.model.Trip;
+import com.solomoon.mytriptracker.models.Trip;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public interface TripDao {
     @Query("SELECT * FROM Trip WHERE id = :id LIMIT 1")
     Trip getTripById(String id);
 
-    @Query("SELECT * FROM Trip WHERE endTimestamp = NULL")
+    @Query("SELECT * FROM Trip WHERE endTimestamp = 0")
     Trip getActiveTrip();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

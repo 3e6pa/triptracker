@@ -1,4 +1,4 @@
-package com.solomoon.mytriptracker.model;
+package com.solomoon.mytriptracker.models;
 
 import android.os.Build;
 import android.os.Parcel;
@@ -20,43 +20,47 @@ public class Trip implements Parcelable {
 
     @PrimaryKey
     @NonNull
-    public String id;
+    private String id;
     
     @ColumnInfo(name = "userId")
     @ForeignKey(entity = User.class, parentColumns = "id", childColumns ="userId", onDelete = ForeignKey.CASCADE)
-    public String userId;
+    private String userId;
 
     @ColumnInfo(name = "name")
-    public String name;
+    private String name;
 
     @ColumnInfo(name = "startTimestamp")
-    public long sartTimestamp;
+    private long sartTimestamp;
+
 
     @ColumnInfo(name = "endTimestamp")
-    public long endTimestamp;
+    private long endTimestamp;
 
     public Trip() {
         this.id = UUID.randomUUID().toString();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Trip trip = (Trip) o;
-        return sartTimestamp == trip.sartTimestamp &&
-                endTimestamp == trip.endTimestamp &&
-                id.equals(trip.id) &&
-                Objects.equals(name, trip.name);
+
+        if (sartTimestamp != trip.sartTimestamp) return false;
+        if (endTimestamp != trip.endTimestamp) return false;
+        if (!id.equals(trip.id)) return false;
+        if (userId != null ? !userId.equals(trip.userId) : trip.userId != null) return false;
+        return name != null ? name.equals(trip.name) : trip.name == null;
     }
 
     @Override
     public int hashCode() {
-        int result =  id.hashCode();
+        int result = id.hashCode();
+        result = 31 * result + (userId != null ? userId.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (int) (sartTimestamp ^ (sartTimestamp >>> 32));
-        result = 31 *  result + (int) (endTimestamp ^ (endTimestamp >>> 32));
+        result = 31 * result + (int) (endTimestamp ^ (endTimestamp >>> 32));
         return result;
     }
 
@@ -91,4 +95,46 @@ public class Trip implements Parcelable {
             return new Trip[size];
         }
     };
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getSartTimestamp() {
+        return sartTimestamp;
+    }
+
+    public void setSartTimestamp(long sartTimestamp) {
+        this.sartTimestamp = sartTimestamp;
+    }
+
+    public long getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public void setEndTimestamp(long endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
+
 }

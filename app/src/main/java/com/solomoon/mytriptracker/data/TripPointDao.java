@@ -1,6 +1,5 @@
 package com.solomoon.mytriptracker.data;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -8,7 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.solomoon.mytriptracker.model.TripPoint;
+import com.solomoon.mytriptracker.models.TripPoint;
 
 import java.util.List;
 

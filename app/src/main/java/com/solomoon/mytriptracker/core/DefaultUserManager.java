@@ -2,10 +2,10 @@ package com.solomoon.mytriptracker.core;
 
 import com.solomoon.mytriptracker.data.AppDatabase;
 import com.solomoon.mytriptracker.data.UserDao;
-import com.solomoon.mytriptracker.exception.IncorrectPasswordException;
-import com.solomoon.mytriptracker.exception.UserNotFoundException;
-import com.solomoon.mytriptracker.model.User;
-import com.solomoon.mytriptracker.exception.UserAlreadyExistsException;
+import com.solomoon.mytriptracker.exceptions.IncorrectPasswordException;
+import com.solomoon.mytriptracker.exceptions.UserNotFoundException;
+import com.solomoon.mytriptracker.models.User;
+import com.solomoon.mytriptracker.exceptions.UserAlreadyExistsException;
 import com.solomoon.mytriptracker.utils.Encryptor;
 
 public class DefaultUserManager {

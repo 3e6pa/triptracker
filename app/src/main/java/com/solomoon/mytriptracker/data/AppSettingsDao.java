@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.solomoon.mytriptracker.model.AppSettings;
+import com.solomoon.mytriptracker.models.AppSettings;
 
 
 @Dao

@@ -44,4 +44,13 @@
     <string name="empty_first_name">First Name cannot be empty</string>
     <string name="empty_last_name">Last Name cannot be empty</string>
     <string name="min_password_length_message">Password must be at least 5 characters</string>
+    <string name="prompt_trip_name">Enter the purpose of your trip</string>
+    <string name="button_start_new_trip_text">Start new Trip</string>
+    <string name="create_new_trip">Create new trip</string>
+    <string name="empty_trip_name">Trip name cannot be empty</string>
+    <string name="start_at">"Start at: "</string>
+    <string name="started_at">Started at</string>
+    <string name="trip_active_now">Trip active now</string>
+    <string name="trip_started_at">"Started at: "</string>
+    <string name="trip_end_at">"Completed at: "</string>
 </resources>

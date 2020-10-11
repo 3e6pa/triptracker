@@ -1,4 +1,4 @@
-package com.solomoon.mytriptracker.exception;
+package com.solomoon.mytriptracker.exceptions;
 
 public class IncorrectPasswordException extends RuntimeException {
     public IncorrectPasswordException(String message){

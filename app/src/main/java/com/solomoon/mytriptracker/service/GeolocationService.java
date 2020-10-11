@@ -2,24 +2,21 @@ package com.solomoon.mytriptracker.service;
 
 import android.Manifest;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import java.util.StringJoiner;
+import com.solomoon.mytriptracker.core.DefaultTripManager;
+import com.solomoon.mytriptracker.data.AppDatabase;
 
 public class GeolocationService extends Service implements LocationListener {
 
@@ -29,14 +26,19 @@ public class GeolocationService extends Service implements LocationListener {
         }
     }
 
+    private static final String TAG = "MyTripTracker service";
+
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meters
 
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 0;// 1000 * 60 * 1; // 1 minute
 
     boolean isGPSEnabled = false;
 
     boolean isNetworkEnabled = false;
     private Location location;
+
+    private AppDatabase appDatabase;
+    private DefaultTripManager tripManager;
 
     public GeolocationService() {
     }
@@ -65,6 +67,7 @@ public class GeolocationService extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         this.location = location;
+        setLocationToActiveTrip(location);
         Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
     }
 
@@ -131,4 +134,22 @@ public class GeolocationService extends Service implements LocationListener {
         return this.location;
     }
 
+    public void setDatabase(AppDatabase appDatabase){
+        this.appDatabase = appDatabase;
+        buildTripManager(appDatabase);
+    }
+
+    private void buildTripManager(AppDatabase appDatabase){
+        if(tripManager == null){
+            tripManager = new DefaultTripManager(appDatabase);
+        }
+    }
+
+    private void setLocationToActiveTrip(Location location){
+        if(tripManager != null){
+            tripManager.setTripPointToActiveTrip(location);
+        } else {
+            Log.d(TAG, "setLocationToActiveTrip: tripManager is NULL. Location not be written");
+        }
+    }
 }

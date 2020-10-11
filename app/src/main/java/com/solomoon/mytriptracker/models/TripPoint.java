@@ -1,4 +1,4 @@
-package com.solomoon.mytriptracker.model;
+package com.solomoon.mytriptracker.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -20,16 +20,16 @@ public class TripPoint implements Parcelable {
 
     @ColumnInfo(name = "tripId")
     @ForeignKey(entity = Trip.class, parentColumns = "id", childColumns = "tripId", onDelete = ForeignKey.CASCADE)
-    public String tripId;
+    private String tripId;
 
     @ColumnInfo(name = "latitude")
-    public double latitude;
+    private double latitude;
 
     @ColumnInfo(name = "longitude")
-    public double longitude;
+    private double longitude;
 
     @ColumnInfo(name = "timestamp")
-    public long timestamp;
+    private long timestamp;
 
     @Override
     public int describeContents() {
@@ -96,5 +96,46 @@ public class TripPoint implements Parcelable {
             return new TripPoint[size];
         }
     };
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(String tripId) {
+        this.tripId = tripId;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
 }
 

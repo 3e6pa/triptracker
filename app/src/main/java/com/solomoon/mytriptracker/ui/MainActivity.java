@@ -17,11 +17,11 @@ import com.solomoon.mytriptracker.App;
 import com.solomoon.mytriptracker.R;
 import com.solomoon.mytriptracker.core.DefaultAppSettingsManager;
 import com.solomoon.mytriptracker.core.DefaultUserManager;
-import com.solomoon.mytriptracker.exception.IncorrectPasswordException;
-import com.solomoon.mytriptracker.exception.UserAlreadyExistsException;
-import com.solomoon.mytriptracker.exception.UserNotFoundException;
-import com.solomoon.mytriptracker.model.AppSettings;
-import com.solomoon.mytriptracker.model.User;
+import com.solomoon.mytriptracker.exceptions.IncorrectPasswordException;
+import com.solomoon.mytriptracker.exceptions.UserAlreadyExistsException;
+import com.solomoon.mytriptracker.exceptions.UserNotFoundException;
+import com.solomoon.mytriptracker.models.AppSettings;
+import com.solomoon.mytriptracker.models.User;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         AppSettings appSettings = appSettingsManager.getCurrentAppSettings();
         if (appSettings.getCurrentUserId() != null) {
-            Intent intent = new Intent(getApplicationContext(), TripListActivity.class);
-            startActivity(intent);
+            TripListActivity.start(this);
             finish();
         }
 
@@ -172,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loginProcessing(User user) {
         appSettingsManager.updateCurrentUserId(user.getId());
-//        TripListActivity.start(this);
+        TripListActivity.start(this);
     }
 
 }

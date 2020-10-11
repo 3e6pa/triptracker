@@ -16,14 +16,20 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.solomoon.mytriptracker.App;
 import com.solomoon.mytriptracker.R;
+import com.solomoon.mytriptracker.core.DefaultTripManager;
+import com.solomoon.mytriptracker.models.TripPoint;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String EXTRA_TRIP_ID = "MapsActivity.TripId";
+
     private GoogleMap mMap;
     private List<Marker> mapMarkers;
+
+    private DefaultTripManager tripManager;
 
     private static void clearMarkers(List<Marker> mapMarkers) {
         if (mapMarkers != null)
@@ -33,14 +39,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapMarkers.clear();
     }
 
-    public static void start(Activity caller) {
+    public static void start(Activity caller, String tripId) {
         Intent intent = new Intent(caller, MapsActivity.class);
+        intent.putExtra(EXTRA_TRIP_ID,tripId);
         caller.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        tripManager = new DefaultTripManager(App.getInstance().getDatabase());
 
         mapMarkers = new ArrayList<>();
 
@@ -65,6 +74,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mapMarkers.add(mMap.addMarker(new MarkerOptions().position(currentPosiotion).title("Current position")));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosiotion));
         }
+
+    }
+
+    private void drawDirections(List<TripPoint> tripPoints){
 
     }
 

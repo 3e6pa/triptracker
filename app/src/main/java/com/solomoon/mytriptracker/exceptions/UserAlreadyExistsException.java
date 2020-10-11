@@ -1,4 +1,4 @@
-package com.solomoon.mytriptracker.exception;
+package com.solomoon.mytriptracker.exceptions;
 
 public class UserAlreadyExistsException extends RuntimeException  {
     public UserAlreadyExistsException(String message){

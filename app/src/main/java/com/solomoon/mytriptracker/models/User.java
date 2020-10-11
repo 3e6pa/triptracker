@@ -1,4 +1,4 @@
-package com.solomoon.mytriptracker.model;
+package com.solomoon.mytriptracker.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

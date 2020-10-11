@@ -1,8 +1,7 @@
-package com.solomoon.mytriptracker.permission;
+package com.solomoon.mytriptracker.permissions;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.icu.text.UnicodeSetIterator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
