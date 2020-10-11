@@ -1,11 +1,9 @@
 package com.solomoon.mytriptracker.core;
 
 import com.solomoon.mytriptracker.data.AppDatabase;
-import com.solomoon.mytriptracker.data.AppSettingsDao;
 import com.solomoon.mytriptracker.data.UserDao;
 import com.solomoon.mytriptracker.exception.IncorrectPasswordException;
 import com.solomoon.mytriptracker.exception.UserNotFoundException;
-import com.solomoon.mytriptracker.model.AppSettings;
 import com.solomoon.mytriptracker.model.User;
 import com.solomoon.mytriptracker.exception.UserAlreadyExistsException;
 import com.solomoon.mytriptracker.utils.Encryptor;
@@ -40,7 +38,6 @@ public class DefaultUserManager {
             if (!user.getPassword().equals(encryptPassword)) {
                 throw new IncorrectPasswordException(INCORRECT_PASSWORD_MESSAGE);
             } else {
-                AppSettings appSettings = new AppSettings();
                 return user;
             }
         }

@@ -4,25 +4,23 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.UserManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.solomoon.mytriptracker.App;
 import com.solomoon.mytriptracker.R;
+import com.solomoon.mytriptracker.core.DefaultAppSettingsManager;
 import com.solomoon.mytriptracker.core.DefaultUserManager;
 import com.solomoon.mytriptracker.exception.IncorrectPasswordException;
 import com.solomoon.mytriptracker.exception.UserAlreadyExistsException;
 import com.solomoon.mytriptracker.exception.UserNotFoundException;
+import com.solomoon.mytriptracker.model.AppSettings;
 import com.solomoon.mytriptracker.model.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     LayoutInflater inflater;
 
     DefaultUserManager userManager;
+    DefaultAppSettingsManager appSettingsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         userManager = new DefaultUserManager(App.getInstance().getDatabase());
+        appSettingsManager = new DefaultAppSettingsManager(App.getInstance().getDatabase());
 
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
@@ -55,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
             showRegisterDialog();
         });
 
+        appSettingsManager = new DefaultAppSettingsManager(App.getInstance().getDatabase());
+
+        AppSettings appSettings = appSettingsManager.getCurrentAppSettings();
+        if (appSettings.getCurrentUserId() != null) {
+            Intent intent = new Intent(getApplicationContext(), TripListActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
     }
 
@@ -99,16 +107,18 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                String userPassword = edtPassword.getText().toString();
+
                 User user = new User();
                 user.setFirstName(edtFirstName.getText().toString());
                 user.setLastName(edtLastName.getText().toString());
                 user.setLogin(edtLogin.getText().toString());
-                user.setPassword(edtPassword.getText().toString());
+                user.setPassword(userPassword);
 
                 try {
                     userManager.registerNewUser(user);
-                    App.getInstance().setCurrentUser(user);
-                    TripListActivity.start(this);
+                    user = userManager.login(user.getLogin(), userPassword);
+                    loginProcessing(user);
                     alertDialog.dismiss();
                 } catch (UserAlreadyExistsException e) {
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -146,12 +156,11 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     User user = userManager.login(edtLogin.getText().toString(), edtPassword.getText().toString());
-                    App.getInstance().setCurrentUser(user);
-                    TripListActivity.start(this);
+                    loginProcessing(user);
                     alertDialog.dismiss();
-                } catch (UserNotFoundException e){
+                } catch (UserNotFoundException e) {
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                } catch (IncorrectPasswordException e){
+                } catch (IncorrectPasswordException e) {
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
@@ -159,6 +168,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         alertDialog.show();
+    }
+
+    private void loginProcessing(User user) {
+        appSettingsManager.updateCurrentUserId(user.getId());
+//        TripListActivity.start(this);
     }
 
 }

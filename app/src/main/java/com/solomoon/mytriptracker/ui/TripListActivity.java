@@ -22,11 +22,6 @@ public class TripListActivity extends PermissionManager  {
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
-    public static void start(Activity caller) {
-        Intent intent = new Intent(caller, MapsActivity.class);
-        caller.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,10 +33,10 @@ public class TripListActivity extends PermissionManager  {
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.title_activity_trip_list);
 
-//        findViewById(R.id.stat_new_trip).setOnClickListener(v -> {
-//            App.getInstance().getGeolocationService().startLocationListener();
-//            MapsActivity.start(this);
-//        });
+        findViewById(R.id.stat_new_trip).setOnClickListener(v -> {
+            App.getInstance().getGeolocationService().startLocationListener();
+            MapsActivity.start(this);
+        });
     }
 
 

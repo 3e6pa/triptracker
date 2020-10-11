@@ -3,14 +3,18 @@ package com.solomoon.mytriptracker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @Entity
 public class AppSettings implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
+    @NonNull
     private int id;
 
     @ColumnInfo(name = "currentUerId")
@@ -78,4 +82,10 @@ public class AppSettings implements Parcelable {
     public int getId() {
         return id;
     }
+
+    @NonNull
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

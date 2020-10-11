@@ -9,24 +9,24 @@ import android.os.IBinder;
 
 import androidx.room.Room;
 
+import com.solomoon.mytriptracker.core.DefaultAppSettingsManager;
+import com.solomoon.mytriptracker.core.DefaultUserManager;
 import com.solomoon.mytriptracker.data.AppDatabase;
+import com.solomoon.mytriptracker.data.RoomMigration;
 import com.solomoon.mytriptracker.data.TripDao;
 import com.solomoon.mytriptracker.data.TripPointDao;
 import com.solomoon.mytriptracker.data.UserDao;
+import com.solomoon.mytriptracker.model.AppSettings;
 import com.solomoon.mytriptracker.model.User;
 import com.solomoon.mytriptracker.service.GeolocationService;
+import com.solomoon.mytriptracker.ui.MapsActivity;
+import com.solomoon.mytriptracker.ui.TripListActivity;
 
 public class App extends Application implements ServiceConnection {
 
     private GeolocationService geolocationService;
 
     private AppDatabase database;
-
-    private UserDao userDao;
-    private TripDao tripDao;
-    private TripPointDao tripPointDao;
-
-    private User currentUser;
 
     private static App instance;
 
@@ -43,11 +43,8 @@ public class App extends Application implements ServiceConnection {
         database = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "TripTracker-db")
                 .allowMainThreadQueries()
+                .addMigrations(RoomMigration.MIGRATION_1_2)
                 .build();
-
-        userDao = database.userDao();
-        tripDao = database.tripDao();
-        tripPointDao = database.tripPointDao();
     }
 
     @Override
@@ -71,26 +68,6 @@ public class App extends Application implements ServiceConnection {
 
     public AppDatabase getDatabase() {
         return database;
-    }
-
-    public UserDao getUserDao() {
-        return userDao;
-    }
-
-    public TripDao getTripDao() {
-        return tripDao;
-    }
-
-    public TripPointDao getTripPointDao() {
-        return tripPointDao;
-    }
-
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
     }
 
 

@@ -24,6 +24,9 @@ public interface TripDao {
     @Query("SELECT * FROM Trip WHERE id = :id LIMIT 1")
     Trip getTripById(String id);
 
+    @Query("SELECT * FROM Trip WHERE endTimestamp = NULL")
+    Trip getActiveTrip();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Trip trip);
 
