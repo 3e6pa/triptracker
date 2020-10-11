@@ -38,10 +38,10 @@ public class TripListActivity extends PermissionManager  {
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.title_activity_trip_list);
 
-        findViewById(R.id.stat_new_trip).setOnClickListener(v -> {
-            App.getInstance().getGeolocationService().startLocationListener();
-            MapsActivity.start(this);
-        });
+//        findViewById(R.id.stat_new_trip).setOnClickListener(v -> {
+//            App.getInstance().getGeolocationService().startLocationListener();
+//            MapsActivity.start(this);
+//        });
     }
 
 
