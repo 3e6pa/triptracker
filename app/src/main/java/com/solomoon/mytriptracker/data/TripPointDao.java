@@ -1,5 +1,6 @@
 package com.solomoon.mytriptracker.data;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -14,7 +15,7 @@ import java.util.List;
 @Dao
 public interface TripPointDao {
     @Query("SELECT * FROM TripPoint WHERE tripId = :tripId")
-    List<TripPoint> getTripPointByTripId(String tripId);
+    LiveData<List<TripPoint>> getTripPointByTripId(String tripId);
 
     @Query("SELECT * FROM TripPoint WHERE id = :id LIMIT 1")
     TripPoint getTripPointById(String id);

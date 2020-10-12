@@ -8,6 +8,7 @@ import android.os.IBinder;
 
 import androidx.room.Room;
 
+import com.solomoon.mytriptracker.core.DefaultTripManager;
 import com.solomoon.mytriptracker.data.AppDatabase;
 import com.solomoon.mytriptracker.data.RoomMigration;
 import com.solomoon.mytriptracker.service.GeolocationService;
@@ -17,6 +18,8 @@ public class App extends Application implements ServiceConnection {
     private GeolocationService geolocationService;
 
     private AppDatabase database;
+
+    private DefaultTripManager tripManager;
 
     private static App instance;
 
@@ -35,6 +38,8 @@ public class App extends Application implements ServiceConnection {
                 .allowMainThreadQueries()
                 .addMigrations(RoomMigration.MIGRATION_1_2)
                 .build();
+
+        tripManager = new DefaultTripManager(database);
     }
 
     @Override
@@ -42,11 +47,19 @@ public class App extends Application implements ServiceConnection {
         GeolocationService.LocalBinder localBinder = (GeolocationService.LocalBinder) service;
         geolocationService = localBinder.getService();
         geolocationService.setDatabase(database);
+
+        startTracking();
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
         geolocationService = null;
+    }
+
+    private void startTracking(){
+        if(tripManager.getActiveTrip() != null){
+            geolocationService.startLocationListener();;
+        }
     }
 
     public GeolocationService getGeolocationService() {

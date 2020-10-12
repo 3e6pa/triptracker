@@ -33,8 +33,10 @@ public class GeolocationService extends Service implements LocationListener {
     private static final long MIN_TIME_BW_UPDATES = 0;// 1000 * 60 * 1; // 1 minute
 
     boolean isGPSEnabled = false;
-
     boolean isNetworkEnabled = false;
+
+    boolean isLocationListenerStarted = false;
+
     private Location location;
 
     private AppDatabase appDatabase;
@@ -53,6 +55,7 @@ public class GeolocationService extends Service implements LocationListener {
         super.onDestroy();
         stopLocationListener();
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startLocationListener();
@@ -91,6 +94,13 @@ public class GeolocationService extends Service implements LocationListener {
     }
 
     public void stopLocationListener() {
+
+        if (!isLocationListenerStarted) {
+            return;
+        } else {
+            isLocationListenerStarted = false;
+        }
+
         LocationManager locationManager = getLocationManager();
 
         if (locationManager != null) {
@@ -103,6 +113,13 @@ public class GeolocationService extends Service implements LocationListener {
     }
 
     public void startLocationListener() {
+
+        if (isLocationListenerStarted) {
+            return;
+        } else {
+            isLocationListenerStarted = true;
+        }
+
         LocationManager locationManager = getLocationManager();
 
         if (locationManager != null) {
@@ -130,23 +147,23 @@ public class GeolocationService extends Service implements LocationListener {
         }
     }
 
-    public Location getLocation(){
+    public Location getLocation() {
         return this.location;
     }
 
-    public void setDatabase(AppDatabase appDatabase){
+    public void setDatabase(AppDatabase appDatabase) {
         this.appDatabase = appDatabase;
         buildTripManager(appDatabase);
     }
 
-    private void buildTripManager(AppDatabase appDatabase){
-        if(tripManager == null){
+    private void buildTripManager(AppDatabase appDatabase) {
+        if (tripManager == null) {
             tripManager = new DefaultTripManager(appDatabase);
         }
     }
 
-    private void setLocationToActiveTrip(Location location){
-        if(tripManager != null){
+    private void setLocationToActiveTrip(Location location) {
+        if (tripManager != null) {
             tripManager.setTripPointToActiveTrip(location);
         } else {
             Log.d(TAG, "setLocationToActiveTrip: tripManager is NULL. Location not be written");

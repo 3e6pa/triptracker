@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.solomoon.mytriptracker.App;
 import com.solomoon.mytriptracker.R;
+import com.solomoon.mytriptracker.core.DefaultTripManager;
 import com.solomoon.mytriptracker.models.Trip;
 import com.solomoon.mytriptracker.permissions.PermissionManager;
 import com.solomoon.mytriptracker.ui.adapters.TripListAdapter;
@@ -32,6 +35,9 @@ public class TripListActivity extends PermissionManager  {
     };
 
     private RecyclerView tripListRecycler;
+    private Button btnCreateTrip;
+
+    private DefaultTripManager tripManager;
 
     public static void start(Activity caller) {
         Intent intent = new Intent(caller, TripListActivity.class);
@@ -49,6 +55,8 @@ public class TripListActivity extends PermissionManager  {
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.title_activity_trip_list);
 
+        tripManager = new DefaultTripManager(App.getInstance().getDatabase());
+
         tripListRecycler = findViewById(R.id.tripList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         tripListRecycler.setLayoutManager(linearLayoutManager);
@@ -60,11 +68,28 @@ public class TripListActivity extends PermissionManager  {
         TripListViewModel tripListViewModel = ViewModelProviders.of(this).get(TripListViewModel.class);
         tripListViewModel.getNoteLiveData().observe(this, notes -> tripListAdapter.setItems(notes));
 
-        findViewById(R.id.stat_new_trip).setOnClickListener(v -> {
+        btnCreateTrip = findViewById(R.id.stat_new_trip);
+        btnCreateTrip.setOnClickListener(v -> {
             CreateTripActivity.start(this);
         });
+
+        setVisibleBtnCreateTrip(tripManager.getActiveTrip() == null);
+
     }
 
+    private void setVisibleBtnCreateTrip(boolean visible){
+        if(visible){
+            btnCreateTrip.setVisibility(View.VISIBLE);
+        } else {
+            btnCreateTrip.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setVisibleBtnCreateTrip(tripManager.getActiveTrip() == null);
+    }
 
     @Override
     public void onPermissionsGranted(int requestCode) {

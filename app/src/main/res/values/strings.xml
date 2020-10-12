@@ -53,4 +53,5 @@
     <string name="trip_active_now">Trip active now</string>
     <string name="trip_started_at">"Started at: "</string>
     <string name="trip_end_at">"Completed at: "</string>
+    <string name="stop_avtive_trip">Stop active trip</string>
 </resources>
