@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,18 +17,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.solomoon.mytriptracker.App;
 import com.solomoon.mytriptracker.R;
 import com.solomoon.mytriptracker.core.DefaultTripManager;
-import com.solomoon.mytriptracker.models.Trip;
 import com.solomoon.mytriptracker.permissions.PermissionManager;
 import com.solomoon.mytriptracker.ui.adapters.TripListAdapter;
 import com.solomoon.mytriptracker.ui.adapters.TripListViewModel;
 
-import java.util.List;
-
-public class TripListActivity extends PermissionManager  {
+public class TripListActivity extends PermissionManager {
 
     private static final int REQUEST_PERMISSION = 10;
 
-    String[] permissions = {
+    private String[] permissions = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
@@ -57,16 +53,7 @@ public class TripListActivity extends PermissionManager  {
 
         tripManager = new DefaultTripManager(App.getInstance().getDatabase());
 
-        tripListRecycler = findViewById(R.id.tripList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        tripListRecycler.setLayoutManager(linearLayoutManager);
-        tripListRecycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-        final TripListAdapter tripListAdapter = new TripListAdapter();
-        tripListRecycler.setAdapter(tripListAdapter);
-
-        TripListViewModel tripListViewModel = ViewModelProviders.of(this).get(TripListViewModel.class);
-        tripListViewModel.getNoteLiveData().observe(this, notes -> tripListAdapter.setItems(notes));
+        initializationTripAdapter();
 
         btnCreateTrip = findViewById(R.id.stat_new_trip);
         btnCreateTrip.setOnClickListener(v -> {
@@ -77,8 +64,30 @@ public class TripListActivity extends PermissionManager  {
 
     }
 
-    private void setVisibleBtnCreateTrip(boolean visible){
-        if(visible){
+    @Override
+    public void onPermissionsGranted(int requestCode) {
+        if (requestCode == REQUEST_PERMISSION) {
+            if (App.getInstance() != null) {
+                App.getInstance().doBindService();
+            }
+        }
+    }
+
+    private void initializationTripAdapter() {
+        tripListRecycler = findViewById(R.id.tripList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        tripListRecycler.setLayoutManager(linearLayoutManager);
+        tripListRecycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+        final TripListAdapter tripListAdapter = new TripListAdapter();
+        tripListRecycler.setAdapter(tripListAdapter);
+
+        TripListViewModel tripListViewModel = ViewModelProviders.of(this).get(TripListViewModel.class);
+        tripListViewModel.getNoteLiveData().observe(this, notes -> tripListAdapter.setItems(notes));
+    }
+
+    private void setVisibleBtnCreateTrip(boolean visible) {
+        if (visible) {
             btnCreateTrip.setVisibility(View.VISIBLE);
         } else {
             btnCreateTrip.setVisibility(View.INVISIBLE);
@@ -89,15 +98,6 @@ public class TripListActivity extends PermissionManager  {
     protected void onResume() {
         super.onResume();
         setVisibleBtnCreateTrip(tripManager.getActiveTrip() == null);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode) {
-        if (requestCode == REQUEST_PERMISSION) {
-            if (App.getInstance() != null){
-                App.getInstance().doBindService();
-            }
-        }
     }
 
     private void setPermissions() {

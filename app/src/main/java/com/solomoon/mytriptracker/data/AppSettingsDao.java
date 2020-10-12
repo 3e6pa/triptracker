@@ -11,6 +11,7 @@ import com.solomoon.mytriptracker.models.AppSettings;
 
 @Dao
 public interface AppSettingsDao {
+
     @Query("SELECT * FROM AppSettings LIMIT 1")
     AppSettings getAppSettings();
 

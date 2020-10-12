@@ -18,13 +18,13 @@ import com.solomoon.mytriptracker.models.Trip;
 
 public class CreateTripActivity extends AppCompatActivity {
 
+    private DefaultTripManager tripManager;
+    private DefaultAppSettingsManager appSettingsManager;
+
     public static void start(Activity caller) {
         Intent intent = new Intent(caller, CreateTripActivity.class);
         caller.startActivity(intent);
     }
-
-    DefaultTripManager tripManager;
-    DefaultAppSettingsManager appSettingsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +41,15 @@ public class CreateTripActivity extends AppCompatActivity {
 
     private void startNewTrip() {
         EditText edtTripName = findViewById(R.id.edtTripName);
+
         if (TextUtils.isEmpty(edtTripName.getText().toString())) {
             Toast.makeText(this, R.string.empty_trip_name, Toast.LENGTH_SHORT).show();
             return;
         }
+
         String tripName = edtTripName.getText().toString().trim();
         String userId = appSettingsManager.getCurrentUserId();
-        tripManager.startNewTrip(tripName,userId);
-
+        tripManager.startNewTrip(tripName, userId);
         Trip activeTrip = tripManager.getActiveTrip();
         MapsActivity.start(this, activeTrip.getId());
         finish();

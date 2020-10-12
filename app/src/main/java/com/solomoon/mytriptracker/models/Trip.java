@@ -21,9 +21,9 @@ public class Trip implements Parcelable {
     @PrimaryKey
     @NonNull
     private String id;
-    
+
     @ColumnInfo(name = "userId")
-    @ForeignKey(entity = User.class, parentColumns = "id", childColumns ="userId", onDelete = ForeignKey.CASCADE)
+    @ForeignKey(entity = User.class, parentColumns = "id", childColumns = "userId", onDelete = ForeignKey.CASCADE)
     private String userId;
 
     @ColumnInfo(name = "name")

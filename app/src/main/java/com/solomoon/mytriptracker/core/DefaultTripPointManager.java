@@ -12,11 +12,11 @@ public class DefaultTripPointManager {
 
     private TripPointDao tripPointDao;
 
-    public DefaultTripPointManager(AppDatabase appDatabase){
+    public DefaultTripPointManager(AppDatabase appDatabase) {
         tripPointDao = appDatabase.tripPointDao();
     }
 
-    public LiveData<List<TripPoint>> getTripPointByTripId(String tripId){
+    public LiveData<List<TripPoint>> getTripPointByTripId(String tripId) {
         return tripPointDao.getTripPointByTripId(tripId);
     }
 }

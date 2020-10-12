@@ -9,8 +9,6 @@ import androidx.room.Update;
 
 import com.solomoon.mytriptracker.models.User;
 
-import java.util.List;
-
 @Dao
 public interface UserDao {
 

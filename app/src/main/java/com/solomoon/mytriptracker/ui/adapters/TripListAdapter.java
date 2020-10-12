@@ -89,7 +89,6 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
         sortedList.replaceAll(trips);
     }
 
-
     static class TripViewHolder extends RecyclerView.ViewHolder {
 
         TextView tripName;

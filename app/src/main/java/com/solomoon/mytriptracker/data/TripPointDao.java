@@ -14,6 +14,7 @@ import java.util.List;
 
 @Dao
 public interface TripPointDao {
+
     @Query("SELECT * FROM TripPoint WHERE tripId = :tripId")
     LiveData<List<TripPoint>> getTripPointByTripId(String tripId);
 

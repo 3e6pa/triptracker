@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,21 +17,23 @@ import com.solomoon.mytriptracker.R;
 import com.solomoon.mytriptracker.core.DefaultAppSettingsManager;
 import com.solomoon.mytriptracker.core.DefaultUserManager;
 import com.solomoon.mytriptracker.exceptions.IncorrectPasswordException;
+import com.solomoon.mytriptracker.exceptions.NotFoundException;
 import com.solomoon.mytriptracker.exceptions.UserAlreadyExistsException;
-import com.solomoon.mytriptracker.exceptions.UserNotFoundException;
 import com.solomoon.mytriptracker.models.AppSettings;
 import com.solomoon.mytriptracker.models.User;
 
+import java.security.NoSuchAlgorithmException;
+
 public class MainActivity extends AppCompatActivity {
 
-    private final int MIN_PASSWORD_LENGTH = 5;
+    private static final int MIN_PASSWORD_LENGTH = 5;
 
-    Button btnLogin, btnRegister;
-    ConstraintLayout root;
-    LayoutInflater inflater;
+    private Button btnLogin, btnRegister;
+    private ConstraintLayout root;
+    private LayoutInflater inflater;
 
-    DefaultUserManager userManager;
-    DefaultAppSettingsManager appSettingsManager;
+    private DefaultUserManager userManager;
+    private DefaultAppSettingsManager appSettingsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         root = findViewById(R.id.root_element);
         inflater = LayoutInflater.from(this);
+
         btnLogin.setOnClickListener(v -> {
             showLoginDialog();
         });
@@ -55,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
             showRegisterDialog();
         });
 
+        autologin();
+    }
+
+    private void autologin() {
         appSettingsManager = new DefaultAppSettingsManager(App.getInstance().getDatabase());
 
         AppSettings appSettings = appSettingsManager.getCurrentAppSettings();
@@ -62,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
             TripListActivity.start(this);
             finish();
         }
-
     }
 
     private void showRegisterDialog() {
@@ -119,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     user = userManager.login(user.getLogin(), userPassword);
                     loginProcessing(user);
                     alertDialog.dismiss();
-                } catch (UserAlreadyExistsException e) {
+                } catch (UserAlreadyExistsException | NoSuchAlgorithmException e) {
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
@@ -157,9 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     User user = userManager.login(edtLogin.getText().toString(), edtPassword.getText().toString());
                     loginProcessing(user);
                     alertDialog.dismiss();
-                } catch (UserNotFoundException e) {
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                } catch (IncorrectPasswordException e) {
+                } catch (NotFoundException | IncorrectPasswordException | NoSuchAlgorithmException e) {
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 

@@ -1,18 +1,13 @@
 package com.solomoon.mytriptracker.ui;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.SortedList;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Observable;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -24,14 +19,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.solomoon.mytriptracker.App;
 import com.solomoon.mytriptracker.R;
 import com.solomoon.mytriptracker.core.DefaultTripManager;
 import com.solomoon.mytriptracker.core.DefaultTripPointManager;
-import com.solomoon.mytriptracker.exceptions.TripNotFoundException;
-import com.solomoon.mytriptracker.models.Trip;
+import com.solomoon.mytriptracker.exceptions.NotFoundException;
 import com.solomoon.mytriptracker.models.TripPoint;
 
 import java.util.ArrayList;
@@ -72,14 +65,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mapMarkers = new ArrayList<>();
+
         tripManager = new DefaultTripManager(App.getInstance().getDatabase());
         tripPointManager = new DefaultTripPointManager(App.getInstance().getDatabase());
 
         if (getIntent().hasExtra(EXTRA_TRIP_ID)) {
             tripId = getIntent().getStringExtra(EXTRA_TRIP_ID);
         }
-
-        mapMarkers = new ArrayList<>();
 
         setContentView(R.layout.activity_maps);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -94,15 +87,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        try{
+        try {
             setVisibleBtnStopTrip(tripManager.checkActiveTrip(tripId));
-        }catch (TripNotFoundException e){
-            Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
+        } catch (NotFoundException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void setVisibleBtnStopTrip(boolean visible){
-        if(visible){
+    private void setVisibleBtnStopTrip(boolean visible) {
+        if (visible) {
             btnStopTrip.setVisibility(View.VISIBLE);
         } else {
             btnStopTrip.setVisibility(View.INVISIBLE);
@@ -110,12 +103,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    public void setMarker(Location location) {
+    public void setMarker(TripPoint tripPoint) {
         clearMarkers(mapMarkers);
-        if ((mMap != null) && (location != null)) {
-            LatLng currentPosiotion = new LatLng(location.getLatitude(), location.getLongitude());
+        if ((mMap != null) && (tripPoint != null)) {
+            LatLng currentPosiotion = new LatLng(tripPoint.getLatitude(), tripPoint.getLongitude());
             mapMarkers.add(mMap.addMarker(new MarkerOptions().position(currentPosiotion).title("Current position")));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosiotion));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPosiotion, DEFAULT_MAP_ZOOM));
         }
 
     }
@@ -124,8 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addPolyline(new PolylineOptions()
                 .clickable(false)
                 .add(new LatLng(tripPoint1.getLatitude(), tripPoint1.getLongitude())
-                    ,new LatLng(tripPoint2.getLatitude(), tripPoint2.getLongitude())));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(tripPoint2.getLatitude(), tripPoint2.getLongitude()), DEFAULT_MAP_ZOOM));
+                        , new LatLng(tripPoint2.getLatitude(), tripPoint2.getLongitude())));
     }
 
     @Override
@@ -138,8 +130,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public int compare(TripPoint o1, TripPoint o2) {
                 if ((o2.getTimestamp() == o1.getTimestamp())) {
                     return 0;
-                } else
+                } else {
                     return -1;
+                }
             }
 
             @Override
@@ -158,8 +151,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onInserted(int position, int count) {
-                if (count>1){
-                    drawDirections(tripPointSortedList.get(1),tripPointSortedList.get(0));
+                if (count > 1) {
+                    drawDirections(tripPointSortedList.get(1), tripPointSortedList.get(0));
+                    setMarker(tripPointSortedList.get(0));
                 }
             }
 

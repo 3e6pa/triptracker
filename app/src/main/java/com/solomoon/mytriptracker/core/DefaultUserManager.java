@@ -3,16 +3,18 @@ package com.solomoon.mytriptracker.core;
 import com.solomoon.mytriptracker.data.AppDatabase;
 import com.solomoon.mytriptracker.data.UserDao;
 import com.solomoon.mytriptracker.exceptions.IncorrectPasswordException;
-import com.solomoon.mytriptracker.exceptions.UserNotFoundException;
+import com.solomoon.mytriptracker.exceptions.NotFoundException;
 import com.solomoon.mytriptracker.models.User;
 import com.solomoon.mytriptracker.exceptions.UserAlreadyExistsException;
 import com.solomoon.mytriptracker.utils.Encryptor;
 
+import java.security.NoSuchAlgorithmException;
+
 public class DefaultUserManager {
 
-    private final String USER_EXIST_MESSAGE = "User already exist";
-    private final String USER_NOT_FOUND_MESSAGE = "User not found";
-    private final String INCORRECT_PASSWORD_MESSAGE = "Incorrect password";
+    private static final String USER_EXIST_MESSAGE = "User already exist";
+    private static final String USER_NOT_FOUND_MESSAGE = "User not found";
+    private static final String INCORRECT_PASSWORD_MESSAGE = "Incorrect password";
 
     private UserDao userDao;
 
@@ -20,7 +22,7 @@ public class DefaultUserManager {
         userDao = appDatabase.userDao();
     }
 
-    public void registerNewUser(User user) {
+    public void registerNewUser(User user) throws NoSuchAlgorithmException {
         if (existsUser(user.getLogin())) {
             throw new UserAlreadyExistsException(USER_EXIST_MESSAGE);
         } else {
@@ -29,13 +31,14 @@ public class DefaultUserManager {
         }
     }
 
-    public User login(String login, String password) {
+    public User login(String login, String password) throws NoSuchAlgorithmException {
         User user = userDao.getUserByLogin(login);
         if (user == null) {
-            throw new UserNotFoundException(USER_NOT_FOUND_MESSAGE);
+            throw new NotFoundException(USER_NOT_FOUND_MESSAGE);
         } else {
-            String encryptPassword = Encryptor.encryptSHA256(password);
-            if (!user.getPassword().equals(encryptPassword)) {
+            StringBuilder encryptPassword =  new StringBuilder();
+            encryptPassword.append(Encryptor.encryptSHA256(password));
+            if (!user.getPassword().equals(encryptPassword.toString())) {
                 throw new IncorrectPasswordException(INCORRECT_PASSWORD_MESSAGE);
             } else {
                 return user;
@@ -48,9 +51,10 @@ public class DefaultUserManager {
         return user != null;
     }
 
-    private void encryptPassword(final User user) {
-        final String password = user.getPassword();
-        user.setPassword(Encryptor.encryptSHA256(password));
+    private void encryptPassword(final User user) throws NoSuchAlgorithmException {
+        final StringBuilder password = new StringBuilder();
+        password.append(user.getPassword());
+        user.setPassword(Encryptor.encryptSHA256(password.toString()));
     }
 
 }

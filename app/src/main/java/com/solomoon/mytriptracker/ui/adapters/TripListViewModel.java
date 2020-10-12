@@ -9,9 +9,11 @@ import com.solomoon.mytriptracker.models.Trip;
 import java.util.List;
 
 public class TripListViewModel extends ViewModel {
+
     private LiveData<List<Trip>> tripLiveData = App.getInstance().getDatabase().tripDao().getAllLiveData();
 
     public LiveData<List<Trip>> getNoteLiveData() {
         return tripLiveData;
     }
+
 }

@@ -32,10 +32,10 @@ public class GeolocationService extends Service implements LocationListener {
 
     private static final long MIN_TIME_BW_UPDATES = 0;// 1000 * 60 * 1; // 1 minute
 
-    boolean isGPSEnabled = false;
-    boolean isNetworkEnabled = false;
+    private  boolean isGPSEnabled = false;
+    private boolean isNetworkEnabled = false;
 
-    boolean isLocationListenerStarted = false;
+    private boolean isLocationListenerStarted = false;
 
     private Location location;
 

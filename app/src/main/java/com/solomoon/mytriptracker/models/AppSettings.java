@@ -18,10 +18,6 @@ public class AppSettings implements Parcelable {
     @ColumnInfo(name = "currentUerId")
     private String currentUserId;
 
-    public AppSettings(){
-
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,8 +36,11 @@ public class AppSettings implements Parcelable {
         return result;
     }
 
+    public AppSettings(){
 
-    protected AppSettings(Parcel in){
+    }
+
+    protected AppSettings(Parcel in) {
         id = in.readInt();
         currentUserId = in.readString();
     }

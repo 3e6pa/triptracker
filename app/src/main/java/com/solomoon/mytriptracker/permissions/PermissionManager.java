@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.snackbar.Snackbar;
 import com.solomoon.mytriptracker.R;
 
-public abstract class PermissionManager  extends AppCompatActivity {
+public abstract class PermissionManager extends AppCompatActivity {
 
     private SparseIntArray mErrorString;
 
@@ -36,7 +36,7 @@ public abstract class PermissionManager  extends AppCompatActivity {
 
         if (permissionCheck != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, requestedPermissions, requestCode);
-        else{
+        else {
             onPermissionsGranted(requestCode);
         }
     }

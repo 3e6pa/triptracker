@@ -10,7 +10,7 @@ import androidx.room.Room;
 
 import com.solomoon.mytriptracker.core.DefaultTripManager;
 import com.solomoon.mytriptracker.data.AppDatabase;
-import com.solomoon.mytriptracker.data.RoomMigration;
+import com.solomoon.mytriptracker.data.migrations.RoomMigration;
 import com.solomoon.mytriptracker.service.GeolocationService;
 
 public class App extends Application implements ServiceConnection {
@@ -58,9 +58,9 @@ public class App extends Application implements ServiceConnection {
         geolocationService = null;
     }
 
-    private void startTracking(){
-        if(tripManager.getActiveTrip() != null){
-            geolocationService.startLocationListener();;
+    private void startTracking() {
+        if (tripManager.getActiveTrip() != null) {
+            geolocationService.startLocationListener();
         }
     }
 
