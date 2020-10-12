@@ -10,12 +10,10 @@ public class Encryptor {
     public static String encryptSHA256(String data){
         String resultData = "";
         try {
-            // Create MD5 Hash
             MessageDigest digest = java.security.MessageDigest.getInstance(ENCRYPT_ALGORITHM);
             digest.update(data.getBytes());
             byte messageDigest[] = digest.digest();
 
-            // Create Hex String
             StringBuffer hexString = new StringBuffer();
             for (int i=0; i<messageDigest.length; i++)
                 hexString.append(Integer.toHexString(0xFF & messageDigest[i]));

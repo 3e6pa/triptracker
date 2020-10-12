@@ -98,8 +98,6 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
 
         Trip trip;
 
-        boolean silentUpdate;
-
         public TripViewHolder(@NonNull final View itemView) {
             super(itemView);
 
@@ -109,24 +107,7 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
 
             itemView.setOnClickListener(view -> MapsActivity.start((Activity) itemView.getContext(), trip.getId()));
 
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    App.getInstance().getDatabase().tripDao().delete(trip);
-                }
-            });
-
-//            completed.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                @Override
-//                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-//                    if (!silentUpdate) {
-//                        note.done = checked;
-//                        App.getInstance().getNoteDao().update(note);
-//                    }
-//                    updateStrokeOut();
-//                }
-//            });
-
+            delete.setOnClickListener(view -> App.getInstance().getDatabase().tripDao().delete(trip));
         }
 
         public void bind(Trip trip) {

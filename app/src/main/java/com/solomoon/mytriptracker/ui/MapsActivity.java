@@ -14,6 +14,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,6 +30,7 @@ import com.solomoon.mytriptracker.App;
 import com.solomoon.mytriptracker.R;
 import com.solomoon.mytriptracker.core.DefaultTripManager;
 import com.solomoon.mytriptracker.core.DefaultTripPointManager;
+import com.solomoon.mytriptracker.exceptions.TripNotFoundException;
 import com.solomoon.mytriptracker.models.Trip;
 import com.solomoon.mytriptracker.models.TripPoint;
 
@@ -44,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private List<Marker> mapMarkers;
+    private Button btnStopTrip;
 
     private DefaultTripManager tripManager;
     private DefaultTripPointManager tripPointManager;
@@ -82,13 +86,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        findViewById(R.id.btnStopTrip).setOnClickListener(v -> {
+        btnStopTrip = findViewById(R.id.btnStopTrip);
+        btnStopTrip.setOnClickListener(v -> {
             if (App.getInstance() != null) {
                 tripManager.endTrip();
                 finish();
             }
         });
 
+        try{
+            setVisibleBtnStopTrip(tripManager.checkActiveTrip(tripId));
+        }catch (TripNotFoundException e){
+            Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setVisibleBtnStopTrip(boolean visible){
+        if(visible){
+            btnStopTrip.setVisibility(View.VISIBLE);
+        } else {
+            btnStopTrip.setVisibility(View.INVISIBLE);
+        }
     }
 
 
@@ -98,7 +116,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng currentPosiotion = new LatLng(location.getLatitude(), location.getLongitude());
             mapMarkers.add(mMap.addMarker(new MarkerOptions().position(currentPosiotion).title("Current position")));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosiotion));
-
         }
 
     }

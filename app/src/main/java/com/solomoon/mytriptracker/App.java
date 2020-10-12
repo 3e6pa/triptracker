@@ -15,6 +15,8 @@ import com.solomoon.mytriptracker.service.GeolocationService;
 
 public class App extends Application implements ServiceConnection {
 
+    private final String DATABASE_NAME = "TripTracker-db";
+
     private GeolocationService geolocationService;
 
     private AppDatabase database;
@@ -34,7 +36,7 @@ public class App extends Application implements ServiceConnection {
         this.instance = this;
 
         database = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "TripTracker-db")
+                AppDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries()
                 .addMigrations(RoomMigration.MIGRATION_1_2)
                 .build();

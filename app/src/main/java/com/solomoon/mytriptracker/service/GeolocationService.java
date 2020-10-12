@@ -71,7 +71,6 @@ public class GeolocationService extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         this.location = location;
         setLocationToActiveTrip(location);
-        Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
